@@ -1,4 +1,4 @@
-# /Twitch Community
+# Twitch Community
 
 A project for the Devpost hackathon to provide a community tab implementations for twitch streamers interact with their followers.
 
