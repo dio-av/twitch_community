@@ -12,12 +12,12 @@ type Repository interface {
 }
 
 type Writer interface {
-	Create(p *Post) (int, error)
+	Create(ctx context.Context, p *Post) (int, error)
 }
 
 type Reader interface {
-	Get(id int) (*Post, error)
-	GetByTitle(t string) (*Post, error)
+	Get(ctx context.Context, id int) (*Post, error)
+	GetByTitle(ctx context.Context, t string) (*Post, error)
 	All(ctx context.Context) ([]Post, error)
 }
 
