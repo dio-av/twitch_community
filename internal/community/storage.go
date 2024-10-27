@@ -29,7 +29,7 @@ var (
 )
 
 func (s *Service) Create(p *Post) (sql.Result, error) {
-	q := `INSERT INTO community_posts(title, content, reactions) VALUES($1, $2, $3);`
+	q := `INSERT INTO posts(title, content, reactions) VALUES($1, $2, $3);`
 	r, err := s.db.Exec(q, p.Title, p.Content, p.Reactions)
 	if err != nil {
 		return r, err

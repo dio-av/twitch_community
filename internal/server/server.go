@@ -9,13 +9,15 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
+	"twitchApp/internal/community"
 	"twitchApp/internal/database"
 )
 
 type Server struct {
 	port int
 
-	db database.Service
+	db            database.Service
+	communityRepo community.Repository
 }
 
 func NewServer() *http.Server {
