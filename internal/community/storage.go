@@ -28,6 +28,13 @@ var (
 	ErrDeleteFailed = errors.New("delete failed")
 )
 
+func NewCommunityService(r Repository, db *sql.DB) *Service {
+	return &Service{
+		repo: r,
+		db:   db,
+	}
+}
+
 func (s *Service) Create(p *Post) (sql.Result, error) {
 	q := `INSERT INTO posts(title, content, reactions) VALUES($1, $2, $3);`
 	r, err := s.db.Exec(q, p.Title, p.Content, p.Reactions)
