@@ -4,8 +4,7 @@ A project for the Devpost hackathon to provide a community tab implementations f
 
 # Project Structure
 
-The Project uses some design patterns like the repository pattern for the postgreSQL database integration. The applications uses OAuth authentication, test containers for integration testing and a makefile for building.
-
+The Project is built following SOLID principles; it uses some design patterns like the repository pattern for the postgreSQL database integration. The application has OAuth2 authentication, test containers for integration tests and a makefile for building it.
 
 
 ## MakeFile
