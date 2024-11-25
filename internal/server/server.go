@@ -16,8 +16,8 @@ import (
 type Server struct {
 	port int
 
-	db            database.Service
-	communityRepo community.Repository
+	db  database.Service
+	cdb community.Repository
 }
 
 func NewServer() *http.Server {

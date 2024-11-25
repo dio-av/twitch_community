@@ -70,7 +70,7 @@ func (s *Server) authCallback(w http.ResponseWriter, r *http.Request) {
 
 	user, err := gothic.CompleteUserAuth(w, r)
 	if err != nil {
-		log.Println(w, r)
+		log.Println(w, r, err.Error())
 		return
 	}
 
@@ -83,7 +83,11 @@ func (s *Server) NewPost(w http.ResponseWriter, r *http.Request) {
 	var post community.Post
 
 	json.NewDecoder(r.Body).Decode(&post)
-	//database.Instance.Create(&product)
+	_, err := s.cdb.Create(context.Background(), &post)
+	if err != nil {
+		log.Println(w, r, err.Error())
+		return
+	}
 	json.NewEncoder(w).Encode(post)
 
 }

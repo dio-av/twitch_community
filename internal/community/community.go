@@ -1,7 +1,5 @@
 package community
 
-import "database/sql"
-
 type Post struct {
 	Id        int
 	Title     string
@@ -10,11 +8,6 @@ type Post struct {
 }
 
 type Posts []*Post
-
-type Service struct {
-	repo Repository
-	db   *sql.DB
-}
 
 // UseCase interface
 type UseCase interface {
