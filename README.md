@@ -2,9 +2,9 @@
 
 A project for the Devpost hackathon to provide a community tab implementations for twitch streamers interact with their followers.
 
-# Project Structure
+# Project structure and details
 
-The Project is built following SOLID principles; it uses some design patterns like the repository pattern for the postgreSQL database integration. The application has OAuth2 authentication, test containers for integration tests and a makefile for building it.
+The Project is built following SOLID principles; it uses the repository pattern for the postgreSQL database interaction. The application has OAuth2 authentication for the app to provide access to the twitch user, test containers for integration tests and a makefile for building the project.
 
 
 ## MakeFile
