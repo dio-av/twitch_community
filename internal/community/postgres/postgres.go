@@ -119,11 +119,11 @@ func (s *service) Update(ctx context.Context, p *c.Post) (sql.Result, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, c.ErrNotExist
 		}
-		return nil, err
+		return nil, fmt.Errorf("%s %w", err, c.ErrUpdateFailed)
 	}
 
 	q = `UPDATE community_posts SET content = $1 WHERE id = $2;`
-	result, err := s.db.Exec(q, np.Id, np.Content)
+	result, err := s.db.Exec(q, p.Content, np.Id)
 	if err != nil {
 		return nil, err
 	}
