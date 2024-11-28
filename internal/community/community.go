@@ -1,7 +1,7 @@
 package community
 
 type Post struct {
-	Id        int
+	Id        int ``
 	Title     string
 	Content   string
 	Reactions map[string]int

@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"time"
 	c "twitchApp/internal/community"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 var (
@@ -54,6 +56,7 @@ func (s *service) Create(ctx context.Context, p *c.Post) (sql.Result, error) {
 
 func (s *service) Get(ctx context.Context, id int) (*c.Post, error) {
 	var p c.Post
+
 	q := `SELECT * FROM community_posts WHERE id = $1;`
 	r := s.db.QueryRow(q, id)
 
@@ -68,11 +71,65 @@ func (s *service) Get(ctx context.Context, id int) (*c.Post, error) {
 }
 
 func (s *service) GetByTitle(ctx context.Context, t string) (*c.Post, error) {
-	return nil, nil
+	var p c.Post
+
+	q := `SELECT * FROM community_posts WHERE title = $1;`
+	r := s.db.QueryRow(q, p.Title)
+
+	if err := r.Scan(&p.Id, &p.Title, &p.Content, &p.Reactions); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, c.ErrNotExist
+		}
+		return nil, err
+	}
+
+	return &p, nil
 }
 
 func (s *service) All(ctx context.Context) ([]c.Post, error) {
-	return nil, nil
+	var pp []c.Post
+
+	q := `SELECT * FROM community_posts;`
+
+	r, err := s.db.Query(q)
+	if err != nil {
+		return []c.Post{}, nil
+	}
+
+	for r.Next() {
+		var p c.Post
+		if err := r.Scan(&p.Id, &p.Title, &p.Content, &p.Reactions); err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil, c.ErrNotExist
+			}
+			return nil, err
+		}
+		pp = append(pp, p)
+	}
+	return pp, nil
+}
+
+func (s *service) Update(ctx context.Context, p *c.Post) (sql.Result, error) {
+	var np c.Post
+
+	q := `SELECT post FROM community_posts WHERE title = $1;`
+	r := s.db.QueryRow(q, p.Title)
+
+	if err := r.Scan(&np.Id, &np.Title, &np.Content, &np.Reactions); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, c.ErrNotExist
+		}
+		return nil, err
+	}
+
+	q = `UPDATE community_posts SET content = $1 WHERE id = $2;`
+	result, err := s.db.Exec(q, np.Id, np.Content)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
 }
 
 // Health checks the health of the database connection by pinging the database.

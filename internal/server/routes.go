@@ -59,7 +59,7 @@ func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) healthHandler(w http.ResponseWriter, r *http.Request) {
-	jsonResp, _ := json.Marshal(s.db.Health())
+	jsonResp, _ := json.Marshal(s.cdb.Health())
 	_, _ = w.Write(jsonResp)
 }
 
@@ -83,19 +83,26 @@ func (s *Server) NewPost(w http.ResponseWriter, r *http.Request) {
 	var post community.Post
 
 	json.NewDecoder(r.Body).Decode(&post)
-	_, err := s.cdb.Create(context.Background(), &post)
+
+	_, err := s.cdb.Create(r.Context(), &post)
 	if err != nil {
 		log.Println(w, r, err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(post)
 
+	json.NewEncoder(w).Encode(post)
 }
 
 func (s *Server) EditPost(w http.ResponseWriter, r *http.Request) {
 	var post community.Post
 
 	json.NewDecoder(r.Body).Decode(&post)
-	//database.Instance.Update(&product)
+	_, err := s.cdb.Update(r.Context(), &post)
+	if err != nil {
+		log.Println(w, r, err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	json.NewEncoder(w).Encode(post)
 }

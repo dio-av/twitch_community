@@ -21,6 +21,7 @@ type Repository interface {
 
 type Writer interface {
 	Create(ctx context.Context, p *Post) (sql.Result, error)
+	Update(ctx context.Context, p *Post) (sql.Result, error)
 }
 
 type Reader interface {
