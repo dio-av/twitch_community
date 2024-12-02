@@ -33,6 +33,7 @@ func NewCommunityRepository() c.Repository {
 	if dbInstance != nil {
 		return dbInstance
 	}
+
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, database, schema)
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
@@ -41,6 +42,7 @@ func NewCommunityRepository() c.Repository {
 	dbInstance = &service{
 		db: db,
 	}
+
 	return dbInstance
 }
 
@@ -60,7 +62,7 @@ func (s *service) Get(ctx context.Context, id int) (*c.Post, error) {
 	q := `SELECT * FROM community_posts WHERE id = $1;`
 	r := s.db.QueryRow(q, id)
 
-	if err := r.Scan(&p.Id, &p.Title, &p.Content, &p.Reactions); err != nil {
+	if err := r.Scan(&p); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, c.ErrNotExist
 		}
@@ -76,7 +78,7 @@ func (s *service) GetByTitle(ctx context.Context, t string) (*c.Post, error) {
 	q := `SELECT * FROM community_posts WHERE title = $1;`
 	r := s.db.QueryRow(q, p.Title)
 
-	if err := r.Scan(&p.Id, &p.Title, &p.Content, &p.Reactions); err != nil {
+	if err := r.Scan(&p); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, c.ErrNotExist
 		}
@@ -98,7 +100,7 @@ func (s *service) All(ctx context.Context) ([]c.Post, error) {
 
 	for r.Next() {
 		var p c.Post
-		if err := r.Scan(&p.Id, &p.Title, &p.Content, &p.Reactions); err != nil {
+		if err := r.Scan(&p); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return nil, c.ErrNotExist
 			}
@@ -115,7 +117,7 @@ func (s *service) Update(ctx context.Context, p *c.Post) (sql.Result, error) {
 	q := `SELECT post FROM community_posts WHERE title = $1;`
 	r := s.db.QueryRow(q, p.Title)
 
-	if err := r.Scan(&np.Id, &np.Title, &np.Content, &np.Reactions); err != nil {
+	if err := r.Scan(&np); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, c.ErrNotExist
 		}

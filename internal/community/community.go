@@ -1,13 +1,13 @@
 package community
 
 type Post struct {
-	Id        int ``
-	Title     string
-	Content   string
-	Reactions map[string]int
+	Id        int            `db:"id"`
+	Title     string         `db:"title"`
+	Content   string         `db:"content"`
+	Reactions map[string]int `db:"reactions"`
 }
 
-type Posts []*Post
+// type Posts []*Post
 
 // UseCase interface
 type UseCase interface {
